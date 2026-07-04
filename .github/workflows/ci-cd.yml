@@ -57,7 +57,9 @@ jobs:
           VITEST_STORAGE_DRIVER: ${{ matrix.storage-driver }}
 
   deploy:
-    if: github.event.ref == 'refs/heads/dev'
+    # Fork tweak: also deploy on manual dispatch of dev — push events don't
+    # trigger workflows on this fork, so workflow_dispatch is the only path.
+    if: github.event.ref == 'refs/heads/dev' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/dev')
     name: 🚀 Build and push
     permissions:
       packages: write
